@@ -1,0 +1,93 @@
+[
+  { "id": "R01", "kind": "crypto", "title": "offline signature verification",
+    "check": "the attestation's proof (EcdsaSecp256k1Signature2019) verifies against the issuer DID's assertion key; DID resolution via the local Gatekeeper only, no other network",
+    "source": "e2e-prove: 'proof verifies'", "params": {} },
+
+  { "id": "R02", "kind": "crypto", "title": "merkle commitment well-formed",
+    "check": "each evidence group's commitment has alg 'sha256', a 64-hex merkleRoot, and artefactIds equal to 'merkle:sha256:'+merkleRoot",
+    "source": "minted attestation: EvidenceGroup.commitment", "params": {} },
+
+  { "id": "R03", "kind": "crypto", "title": "revealed-leaf merkle membership",
+    "check": "every revealed leaf re-derives to the signed merkleRoot via its path (vacuously true in FULL/summary mode, where nothing is revealed)",
+    "source": "e2e-evidence-selective: 'revealed leaf verifies against the signed Merkle root'", "params": {} },
+
+  { "id": "R04", "kind": "coverage", "title": "window coverage",
+    "check": "the evidence group's [observedFrom, observedTo] covers the requested period at date granularity (observedFrom date <= from AND observedTo date >= to)",
+    "source": "minted attestation: EvidenceGroup.observedFrom/observedTo", "params": { "window": "2026-01-01/2026-06-30" } },
+
+  { "id": "R05", "kind": "coverage", "title": "count threshold",
+    "check": "the bundle establishes the predicate count >= 90 (the exact count is not required — a coarsened threshold assertion also satisfies this)",
+    "source": "e2e-evidence: 'group.count'", "params": { "min": 90 } },
+
+  { "id": "R06", "kind": "coverage", "title": "evidence kind matches",
+    "check": "every evidence group's kind is the requested 'location'",
+    "source": "minted attestation: EvidenceGroup.kind", "params": { "kind": "location" } },
+
+  { "id": "R07", "kind": "coverage", "title": "observation window well-ordered",
+    "check": "each evidence group has observedFrom <= observedTo",
+    "source": "EvidenceGraphSummary.evidence[]", "params": {} },
+
+  { "id": "R08", "kind": "scope", "title": "no out-of-window leaf (absence)",
+    "check": "NO revealed leaf's observedAt falls outside the requested window — an absence claim; holds by construction in FULL mode",
+    "source": "CGPR §4.4(4) scoped grant; e2e-evidence-selective", "params": { "window": "2026-01-01/2026-06-30" } },
+
+  { "id": "R09", "kind": "scope", "title": "no third-party identifier (absence)",
+    "check": "the only did: values in the bundle are the issuer, the credentialSubject, and the credentialSchema; no witness DID, pairwise linkage, or counterparty DID appears — an absence claim",
+    "source": "CGPR §4.4(1)/(7) pairwise unlinkability; lexon_pvm absence lesson", "params": {} },
+
+  { "id": "R10", "kind": "scope", "title": "no raw payload disclosed (absence)",
+    "check": "the bundle carries only hash commitments, never artefact content: no ciphertext / payload / rawContent field appears anywhere — an absence claim",
+    "source": "evidence-graph design: issuer-attested, provenance as content hashes", "params": {} },
+
+  { "id": "R11", "kind": "scope", "title": "no linkage identifier (absence)",
+    "check": "credentialSubject carries no cross-context linkage: no accountHandle, pairwise map, or foreign-id field beyond its did: subject — an absence claim",
+    "source": "CGPR §4.4(1) no subject identifier leakage", "params": {} },
+
+  { "id": "R12", "kind": "shape", "title": "credential type",
+    "check": "top-level type includes both 'VerifiableCredential' and 'HearthholdAttestation'",
+    "source": "minted attestation: type", "params": {} },
+
+  { "id": "R13", "kind": "shape", "title": "subject type",
+    "check": "credentialSubject.type equals 'HearthholdAttestation'",
+    "source": "minted attestation: credentialSubject.type", "params": {} },
+
+  { "id": "R14", "kind": "shape", "title": "context declared",
+    "check": "@context includes the W3C VC 2.0 context and the Hearthold evidence context https://hearthold.dev/2026/evidence/v1",
+    "source": "minted attestation: @context", "params": {} },
+
+  { "id": "R15", "kind": "schema", "title": "schema resolvable and conformant",
+    "check": "credentialSchema.id resolves via the local Gatekeeper to a JsonSchema, and the bundle satisfies it (carries the required 'type')",
+    "source": "e2e schema challenge; ensureSchema('HearthholdAttestation')", "params": {} },
+
+  { "id": "R16", "kind": "shape", "title": "machine-derived description",
+    "check": "credentialSubject.descriptionSource equals 'machine-derived' (the Warden authors the disclosure; it is never requester-authored)",
+    "source": "invariant: the Warden authors all consent text", "params": {} },
+
+  { "id": "R17", "kind": "shape", "title": "declared trust class",
+    "check": "credentialSubject.trustClass is one of 'witnessed' or 'composite'",
+    "source": "e2e-evidence-composite: 'graph trust class is composite'", "params": {} },
+
+  { "id": "R18", "kind": "consistency", "title": "evidence mirror consistent",
+    "check": "the top-level evidence array is deep-equal to credentialSubject.evidence (the disclosed mirror matches the signed subject)",
+    "source": "minted attestation: mirrored evidence", "params": {} },
+
+  { "id": "R19", "kind": "consistency", "title": "single-use txn consistent",
+    "check": "credentialSubject.txn equals termsOfUse[0].txn (the burn identifier is internally consistent)",
+    "source": "minted attestation: txn in subject + termsOfUse", "params": {} },
+
+  { "id": "R20", "kind": "registry", "title": "issuer is an authorized asserter",
+    "check": "the issuer DID resolves via the Gatekeeper and the key named by proof.verificationMethod is present in the issuer DID document's assertionMethod set",
+    "source": "e2e-prove: 'proof from an untrusted issuer is rejected'", "params": {} },
+
+  { "id": "R21", "kind": "lifecycle", "title": "expiry declared and future",
+    "check": "validUntil is present, ISO-parseable, and strictly greater than the check-time clock",
+    "source": "EvidenceGraphSummary.validUntil", "params": {} },
+
+  { "id": "R22", "kind": "lifecycle", "title": "single-use declared",
+    "check": "termsOfUse carries an entry of type 'HearthholdSingleUse' with a non-empty txn",
+    "source": "e2e-scroll-burn: 'the scroll is spent (burned)'; CGPR §4.4(5)", "params": {} },
+
+  { "id": "R23", "kind": "lifecycle", "title": "temporal sanity",
+    "check": "validFrom is present, ISO-parseable, and <= validUntil",
+    "source": "minted attestation: validFrom/validUntil", "params": {} }
+]

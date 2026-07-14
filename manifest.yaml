@@ -1,5 +1,5 @@
 # manifest.yaml — pipeline state. Keystone-only writes (GR-10).
-pipeline: <instance name>
+pipeline: hearthold
 version: 1
 gates:
   - G0-conform        # node engine/conform.mjs <instance> green

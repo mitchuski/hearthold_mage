@@ -11,4 +11,8 @@ Evidence classes:
 
 | slug | class | resolves to | note |
 |---|---|---|---|
-| baseline-run | E-RUN | runs/r0/measure.log | first baseline measurement |
+| baseline-run | E-RUN | runs/baseline/bundle.json | the FULL-mode reference bundle; `measure-disclosure.mjs --baseline` → 2049 |
+| self-test | E-RUN | scripts/self-test.mjs | canary 23/23 + 14 negatives refused (run at acceptance) |
+| census | E-DOC | census/requirements.json | 23 frozen requirements; sha in census/FROZEN.md |
+| census-design | E-DOC | census/DESIGN.md | provenance + absence-claim audit trail for the gate |
+| seat-brief | E-DOC | ../hearthold/HARNESS-SEAT-BRIEF.md | the build brief these deliverables satisfy |
