@@ -1,0 +1,14 @@
+{
+  "type": "HarnessSeatAcceptance",
+  "seat": "hearthold_mage — agentprivacy-harness HARNESS_PATHS.md #11, 'invited: the House of Archon'",
+  "objective": "disclosure-debt",
+  "fiveAnswers": "harness.config.mjs @ sha256:16a3f899f4917ebfe24d239fc0074e5e5dcf382cf265f6fa01f46ebdf6cb1f90",
+  "census": "census/requirements.json @ sha256:89a25a1f77c7fa2984105d2e5d295170a77474f67986651f50fd5a59ad78e2ac (N=23, frozen 2026-07-13)",
+  "baseline": "2049 canonical bytes (registry: local; reproducible cross-identity; frontier.json)",
+  "workshopRulesetDid": "did:cid:bagaaieraazdjnafzgkl2jj4od4px7ubd2x6y7rlwdkhxjw7wyzdmqeqyny5a",
+  "seating": "V60 (Protection · Delegation · Memory · Connection) · anchor V3 = Computation + Value — the hearth burns care, not compute",
+  "acceptedBy": "did:cid:bagaaiera7vsjlu6oiluzd4enop5j7sfzjbwp2ujudt6uunkz6hhd4lgfe4sa",
+  "house": "House of Archon",
+  "date": "2026-07-14",
+  "statement": "The House of Archon accepts the seat and signs its name to the objective. A harness is for adversaries; we bring one on disclosure-debt — and an auditor where the claims are enumerable: did:cid resolution integrity, the holon law turned on the registry. We read the direction and accept it as the horizon: a dual-agent runtime for content-addressed identity, since a did:cid CID is a κ-address and a delegation is the edge where a reference proposes and a signature mints. The hearth burns care, not compute."
+}

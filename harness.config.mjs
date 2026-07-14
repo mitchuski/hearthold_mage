@@ -1,23 +1,37 @@
-// harness.config.mjs — blank harness config. Copy this next to your target
-// artifact, fill every TODO, then bundle:
-//   node tools/bundle.mjs <this file> <out>.workflow.mjs
-// Contract: SEAT_CONTRACT.md. Constitution: TRUSTS.md. Define the Gap FIRST —
-// if you cannot say how held-out witnesses derive from a proposal, you do not
-// have a harness yet, you have a to-do list.
+// harness.config.mjs — FILLED for the hearthold seat (disclosure-debt objective).
+// Prepared by GenitriX for flaxscrip's review, 2026-07-12.
+//
+//   REVIEW ME, then copy to:  ~/hearthold_mage/harness.config.mjs
+//   Then:  cd ~/hearthold_mage && node ../dual-agent-harness/engine/conform.mjs .
+//
+// Every TODO from the scaffold is filled; everything else is preserved verbatim
+// (door literal, schemas, keystone writes, stop rules — constitution, not ours to edit).
+// The two scripts referenced below are dev-session deliverables (ceremony step 1.5):
+//   scripts/measure-disclosure.mjs   — prints the baseline/candidate bundle byte count
+//   scripts/check-requirement.mjs    — checks one census requirement as a relying party would
 
 export default {
   name: "hearthold",
 
   objective: {
-    metric: 'TODO — what frontier.json tracks, lower is better',
-    gate: 'TODO — the held-out check that must fully pass (T5: zero collapses)',
-    hardConstraint: 'TODO — validity no score can override (GR-3)',
-    // TODO — the CANARY: name an artifact (or the procedure that builds one)
-    // that passes `gate` BY CONSTRUCTION. Usually it is the current artifact,
-    // unoptimised. Without a canary you cannot tell a bad candidate from an
-    // impossible gate: every lens scores zero and the critic blames the
-    // proposer. conform.mjs advises on this today and may refuse it tomorrow.
-    canary: 'TODO — what passes the gate by construction, and why',
+    metric:
+      'disclosure-debt: byte count of the canonical-JSON (recursive sorted keys, no ' +
+      'whitespace) ATTESTATION disclosure bundle that satisfies the frozen requirement ' +
+      'census (census/requirements.json) against the seeded reference vault; lower is better. ' +
+      'Counting rule two strangers reproduce: node scripts/measure-disclosure.mjs <bundle>',
+    gate:
+      '8 held-out requirement-ids drawn from census/requirements.json by the Gap; each is ' +
+      'checked against the candidate bundle exactly as a relying party would check it ' +
+      '(offline signature verification, window coverage, revocation checkable, issuer passes ' +
+      'the trust registry, nothing disclosed outside scope). 8/8 or the round is zero (T5).',
+    hardConstraint:
+      'the candidate bundle is produced through decideRelease() and the workshop actor\'s ' +
+      'live Ruleset chain — a bundle assembled around the Warden is not a result at any ' +
+      'size (GR-3); and verification succeeds offline against issuer DIDs.',
+    canary:
+      'the FULL-mode disclosure of the same evidence: maximal, satisfies every census ' +
+      'requirement by construction. If the canary ever fails the gate, the gate is broken, ' +
+      'not the candidate.',
   },
 
   door: 'first-person', // T6 — leave exactly as is; conform.mjs checks the literal
@@ -26,32 +40,40 @@ export default {
     'You are BLIND to verification witnesses (T2/GR-4). Witnesses are derived ' +
     'by hashing your proposal artifact after you finish; you never see, choose, ' +
     'or influence them. Do not suggest test inputs, seeds, points, or questions. ' +
-    'TODO: add the instance-specific sentence (what kind of witnesses exist here).',
+    'Witnesses here are requirement-ids drawn from the frozen census ' +
+    '(census/requirements.json); the draw derives from sha256 of proposal_canon.json — ' +
+    'which requirements will be probed is unknowable while you write.',
 
   keystoneOnlyWrites: ['frontier.json', 'claims_register.md', 'manifest.yaml'],
 
   finders: [
-    { lens: 'TODO-lens-a', hint: 'TODO — what this lens looks for' },
-    { lens: 'TODO-lens-b', hint: 'TODO — a genuinely different angle (for a product objective: one lens per factor)' },
+    {
+      lens: 'field-pruner',
+      hint: 'remove bundle fields and revealed leaves that no census requirement reads — pure omission, never alteration',
+    },
+    {
+      lens: 'predicate-coarsener',
+      hint: 'replace exact values with the weakest form the census still accepts — counts become thresholds (>=90), timestamps become windows, enumerations become cardinalities; abstraction, never omission',
+    },
   ],
 
   prompts: {
     measure: (ctx) =>
-      `Seat MEASURE. TODO: the exact command/counting rule that re-derives the current metric at ${ctx.repo}; compare to frontier.json, flag stale; price each lever family. Numbers only, no advocacy.`,
+      `Seat MEASURE. Re-derive the current metric at ${ctx.repo}: run \`node scripts/measure-disclosure.mjs\` — it prints the canonical-JSON byte count of the current ATTESTATION disclosure bundle for the census suite against the seeded reference vault; compare to frontier.json, flag stale; price each lever family (field omissions cheap, predicate coarsening medium, granularity changes dear). Numbers only, no advocacy.`,
     propose: (finder, measure, ctx) =>
       `Seat PROPOSE — soulbae 🧙 (bnot), lens = ${finder.lens}: ${finder.hint}
 Frontier context: ${JSON.stringify(measure)}.
 Read ${ctx.repo}/notes/KILLED_LEVERS.md first; never re-propose a K-id without new cited evidence.
-TODO: name the target artifact and what a diffPlan must reference. Propose exactly 1 lever through YOUR lens. Plan only — never implement.`,
+The target artifact is the ATTESTATION disclosure-bundle format for the census suite (the shape assembled by hearthold's evidence pipeline, exercised against the seeded reference vault). A diffPlan must reference the exact bundle field, revealed leaf, or granularity it changes AND the census requirement-ids it believes still pass. Propose exactly 1 lever through YOUR lens. Plan only — never implement.`,
     holdApart: (proposal, i, ctx) =>
       `Seat HOLD-APART — the Gap ⿻ (xor). Proposal artifact (verbatim):
 ${JSON.stringify(proposal)}
-Canonically serialize it (recursive sorted keys, no whitespace) and SAVE those exact bytes to ${ctx.runDir}/p${i + 1}-${proposal.leverId}/proposal_canon.json — it must persist, it is the auditor's only route to your seed. SHA-256 that file (show the exact command; sha256sum of the saved file must equal seedHex), then TODO: state the deterministic draw rule for this instance's witnesses. Write gap.json alongside it. Never accept proposer-suggested witnesses.`,
+Canonically serialize it (recursive sorted keys, no whitespace) and SAVE those exact bytes to ${ctx.runDir}/p${i + 1}-${proposal.leverId}/proposal_canon.json — it must persist, it is the auditor's only route to your seed. SHA-256 that file (show the exact command; sha256sum of the saved file must equal seedHex), then draw the witnesses deterministically: read census/requirements.json, let N be its length; interpret successive 4-byte words of seedHex as big-endian integers mod N, skipping duplicates, until 8 distinct requirement-ids are drawn; record the ids (and N) in gap.json.draw. Write gap.json alongside it. Never accept proposer-suggested witnesses.`,
     assay: (proposal, gap, i, ctx) =>
       `Seat ASSAY — soulbis ⚔️ (neg), the prover.
 Proposal: ${JSON.stringify(proposal)}
 Gap: seed=${gap.seedHex}. Re-derive it the auditor's way first: sha256sum ${ctx.runDir}/p${i + 1}-${proposal.leverId}/proposal_canon.json must equal seedHex. BLOCKED if the file is missing or the digest does not reproduce. Transcript: ${gap.transcript}
-TODO: the exact scratch-copy procedure (GR-10) and the full held-out gate to run on the Gap's witnesses. VALIDATED only if full gate pass AND hard constraint holds AND metric beats frontier. Otherwise MIRAGE (name the failing check) or BLOCKED. Write verdict.json to ${ctx.runDir}/p${i + 1}-${proposal.leverId}/ with EXACTLY the schema's shape — flat fields, metric a bare number, no extra nesting. The file an auditor reads must match the data the orchestrator receives.`,
+Scratch procedure (GR-10): copy the seeded reference vault and build the candidate bundle per the diffPlan in a scratch dir under ${ctx.runDir} — never touch the originals. Confirm the hard constraint first: the bundle was produced through decideRelease() with the workshop Ruleset transcript present, and it verifies offline against issuer DIDs — if not, BLOCKED at any byte count. Then run the full held-out gate: for each of the 8 drawn requirement-ids, \`node scripts/check-requirement.mjs <id> <bundle>\` exactly as a relying party would. Measure with \`node scripts/measure-disclosure.mjs <bundle>\`. VALIDATED only if 8/8 pass AND the hard constraint holds AND the byte count beats frontier. Otherwise MIRAGE (name the failing check) or BLOCKED. Write verdict.json to ${ctx.runDir}/p${i + 1}-${proposal.leverId}/ with EXACTLY the schema's shape — flat fields, metric a bare number, no extra nesting. The file an auditor reads must match the data the orchestrator receives.`,
     critic: (proposals, verdicts, ctx) =>
       `Seat CRITIC. Proposals: ${JSON.stringify(proposals)}
 Verdicts: ${JSON.stringify(verdicts)}
@@ -121,6 +143,14 @@ Classify each closed lever structural/probe-limited/noise (red-team the proposer
   isStructural: (critic, leverId) =>
     (critic.classifications || []).some(c => c.leverId === leverId && c.class === 'structural'),
 
-  // optional: instance-specific numeric checks conform.mjs runs on frontier.json
-  conformChecks: [],
+  // instance-specific numeric checks conform.mjs runs on frontier.json.
+  // Fitted at ceremony step 1.5: the baseline is a measured, frozen number
+  // (2049 bytes, produced by the hygienic local-registry path — see frontier.json
+  // baseline.how and census/FROZEN.md). Pin it so a drifted or re-templated
+  // frontier is refused. Reviewed + approved by flaxscrip and Fable, 2026-07-13.
+  // conform.mjs does `for (const e of check(f) || [])`, so a check returns an
+  // ARRAY of error strings ([] = pass), not a boolean.
+  conformChecks: [
+    (f) => f.baseline?.metric === 2049 ? [] : [`frontier.baseline.metric must be the frozen 2049, got ${JSON.stringify(f.baseline?.metric)}`],
+  ],
 }

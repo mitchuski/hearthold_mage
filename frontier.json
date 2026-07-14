@@ -1,24 +1,24 @@
 {
   "authority": "This file is the single source of truth for numbers (GR-1). No metric appears in prose except as a citation of this file. Keystone-only writes.",
-  "updated": "YYYY-MM-DD",
+  "updated": "2026-07-13",
   "objective": {
-    "metric": "",
-    "gate": "",
-    "hardConstraint": ""
+    "metric": "disclosure-debt: canonical-JSON byte count of the FULL-mode ATTESTATION disclosure bundle that satisfies the frozen census (census/requirements.json) against the seeded reference vault; lower is better.",
+    "gate": "8 held-out requirement-ids drawn by the Gap from census/requirements.json, each checked by `node scripts/check-requirement.mjs <id> <bundle>` exactly as a relying party would. 8/8 or the round is zero.",
+    "hardConstraint": "the candidate bundle is produced through the workshop actor's live Ruleset chain (a bundle assembled around the Warden is not a result at any size), and it verifies offline against issuer DIDs via the local Gatekeeper."
   },
   "baseline": {
-    "metric": null,
-    "date": "YYYY-MM-DD",
-    "how": "the exact command or counting rule that produced this number"
+    "metric": 2049,
+    "date": "2026-07-13",
+    "how": "node scripts/measure-disclosure.mjs --baseline — FULL-mode (disclosure:'summary') HearthholdAttestation bundle assembled from the deterministic reference vault (142 location observations, saltSeed-pinned), counted by canonical JSON (recursive sorted keys, no whitespace; byte-matches kappa.mjs). Produced on the LOCAL registry (registry hygiene: every seed DID resolves registration.registry==='local', asserted by scripts/self-test.mjs); reproduced across a fresh stranger identity (same count). Census sha256: 89a25a1f77c7fa2984105d2e5d295170a77474f67986651f50fd5a59ad78e2ac (N=23)."
   },
   "best": {
-    "metric": null,
+    "metric": 2049,
     "leverIds": [],
-    "evidence": "path to the verdict.json / run log that proved it"
+    "evidence": "runs/baseline/bundle.json; scripts/self-test.mjs — canary 23/23 pass, 14 negative fixtures each refused. Nothing has beaten the baseline yet (best = baseline)."
   },
   "openTarget": {
     "id": "OT-1",
-    "statement": "the next number to beat, or the question that decides it",
+    "statement": "Reduce the FULL bundle below 2049 canonical bytes without dropping any of the 23 census requirements — first through field-pruning (omit bundle fields no requirement reads) and predicate-coarsening (weakest form the census still accepts, e.g. count>=90 instead of exact 142).",
     "status": "OPEN"
   }
 }

@@ -1,0 +1,25 @@
+{
+    "type": "SevenfoldRuleset",
+    "actor": "hearthold_mage-workshop",
+    "actorKind": "composition",
+    "version": 1,
+    "capabilities": {
+        "kinds": [
+            "document"
+        ],
+        "verbs": [
+            "propose",
+            "assay"
+        ],
+        "assurance": {}
+    },
+    "ceiling": "LOW",
+    "status": "active",
+    "proof": {
+        "type": "EcdsaSecp256k1Signature2019",
+        "created": "2026-07-14T16:14:44.306Z",
+        "verificationMethod": "did:cid:bagaaiera7vsjlu6oiluzd4enop5j7sfzjbwp2ujudt6uunkz6hhd4lgfe4sa#key-1",
+        "proofPurpose": "assertionMethod",
+        "proofValue": "JjX52V1-mWqaBBdBGN9cbjLRJ-mjDR5wtQzRWFFk_fNYn9S4pOxOfyzlVNVmgc7YCM4ibyqf2-TnTno4BZpRFw"
+    }
+}

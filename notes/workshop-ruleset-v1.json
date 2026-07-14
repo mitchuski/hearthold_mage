@@ -1,0 +1,13 @@
+{
+  "type": "SevenfoldRuleset",
+  "actor": "hearthold_mage-workshop",
+  "actorKind": "composition",
+  "version": 1,
+  "capabilities": {
+    "kinds": ["document"],
+    "verbs": ["propose", "assay"],
+    "assurance": {}
+  },
+  "ceiling": "LOW",
+  "status": "active"
+}
