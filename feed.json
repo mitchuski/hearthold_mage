@@ -1,0 +1,69 @@
+{
+  "feed": "dual-agent-harness/runtime-feed.v1",
+  "instance": "hearthold_mage",
+  "updated": "2026-07-13",
+  "movingCeiling": {
+    "metric": "disclosure-debt: canonical-JSON byte count of the FULL-mode ATTESTATION disclosure bundle that satisfies the frozen census (census/requirements.json) against the seeded reference vault; lower is better.",
+    "direction": "down",
+    "baseline": 2049,
+    "best": 2049,
+    "ratioNow": 1,
+    "open": {
+      "id": "OT-1",
+      "statement": "Reduce the FULL bundle below 2049 canonical bytes without dropping any of the 23 census requirements — first through field-pruning (omit bundle fields no requirement reads) and predicate-coarsening (weakest form the census still accepts, e.g. count>=90 instead of exact 142).",
+      "status": "OPEN"
+    },
+    "series": [
+      {
+        "label": "baseline",
+        "value": 2049,
+        "ratio": 1,
+        "date": "2026-07-13",
+        "lever": null
+      },
+      {
+        "label": "best",
+        "value": 2049,
+        "ratio": 1,
+        "date": "2026-07-13",
+        "lever": null
+      }
+    ]
+  },
+  "objective": {
+    "metric": "disclosure-debt: canonical-JSON byte count of the FULL-mode ATTESTATION disclosure bundle that satisfies the frozen census (census/requirements.json) against the seeded reference vault; lower is better.",
+    "gate": "8 held-out requirement-ids drawn by the Gap from census/requirements.json, each checked by `node scripts/check-requirement.mjs <id> <bundle>` exactly as a relying party would. 8/8 or the round is zero.",
+    "hardConstraint": "the candidate bundle is produced through the workshop actor's live Ruleset chain (a bundle assembled around the Warden is not a result at any size), and it verifies offline against issuer DIDs via the local Gatekeeper."
+  },
+  "coverageNote": null,
+  "closedTargets": [],
+  "verdicts": {
+    "VALIDATED": 0,
+    "MIRAGE": 0,
+    "BLOCKED": 0
+  },
+  "runs": [
+    {
+      "id": "baseline",
+      "proposals": 0,
+      "tally": {
+        "VALIDATED": 0,
+        "MIRAGE": 0,
+        "BLOCKED": 0
+      },
+      "view": null
+    }
+  ],
+  "killedLevers": {
+    "count": 1,
+    "ids": [
+      "K-1"
+    ]
+  },
+  "lattice": null,
+  "artefacts": [],
+  "door": "first-person",
+  "inscription": "(⚔️⊥⿻⊥🧙)😊 = neg ⊕ bnot → succ",
+  "note": "A projection of runtime state for the model instruments (/star · game42 · spellweb). The run directory and frontier.json are authoritative; wiring a consumer is the First Person’s (T6).",
+  "κ": "sha256:408ef99d073dee243df61dddb527fbe5e09642532a840743dac704dc0d36042b"
+}
